@@ -9,6 +9,21 @@ usersRouter.get('/', async (request, response) => {
   response.send(users.map(User.format))
 })
 
+
+usersRouter.get('/:id', async (request, response) => {
+  try {
+    const user = await User.findById(request.params.id)
+    if ( user ) {
+      response.json(User.format(user))
+    } else {
+      response.status(404).end()
+    }
+  } catch ( exception ) {
+    console.log(exception)
+    response.status(400).send({ error: 'malformatted id' })
+  }
+})
+
 usersRouter.post('/', async (request, response) => {
   try {
     const { username, name, password, adult } = request.body
@@ -17,7 +32,7 @@ usersRouter.post('/', async (request, response) => {
       return response.status(400).json({ error: 'password too short' })
     }
 
-    const existing = await User.findOne({username})
+    const existing = await User.findOne({ username })
     if (existing) {
       return response.status(400).json({ error: 'username must be unique' })
     }

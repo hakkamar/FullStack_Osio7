@@ -4,14 +4,37 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 
 blogRouter.get('/', async (request, response) => {
+  console.log('haetaan kaikki')
+
+
   const blogs = await Blog
     .find({})
-    .populate('user', {username: 1, name: 1})
+    .populate('user', { username: 1, name: 1 })
 
   response.json(blogs)
 })
 
+blogRouter.get('/:id', async (request, response) => {
+  console.log('haetaan iideellä', request.params.id)
+
+
+  try {
+    const blog = await Blog.findById(request.params.id)
+    if ( blog ) {
+      response.json(Blog.format(blog))
+    } else {
+      response.status(404).end()
+    }
+  } catch ( exception ) {
+    console.log(exception)
+    response.status(400).send({ error: 'malformatted id' })
+  }
+})
+
 blogRouter.post('/', async (request, response) => {
+
+  console.log('lisätään uusi')
+
   const { title, author, url, likes } = request.body
 
   try {
@@ -47,6 +70,9 @@ blogRouter.post('/', async (request, response) => {
 })
 
 blogRouter.delete('/:id', async (request, response) => {
+
+  console.log('poistetaan iideellä', request.params.id)
+
   const blog = await Blog.findById(request.params.id)
 
   try {
@@ -56,7 +82,7 @@ blogRouter.delete('/:id', async (request, response) => {
     if (!token || !decodedToken.id) {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
-    
+
     console.log(blog.user, decodedToken.id)
 
     if (decodedToken.id.toString() !== blog.user.toString()) {
@@ -66,7 +92,7 @@ blogRouter.delete('/:id', async (request, response) => {
     if (blog) {
       await blog.remove()
     }
-    
+
     response.status(204).end()
   } catch (exception) {
     if (exception.name === 'JsonWebTokenError') {
@@ -79,9 +105,12 @@ blogRouter.delete('/:id', async (request, response) => {
 })
 
 blogRouter.put('/:id', async (request, response) => {
+
+  console.log('päivitetään iideellä', request.params.id)
+
   const { title, author, url, likes } = request.body
-  const blog = await Blog.findByIdAndUpdate(request.params.id, { title, author, url, likes } , {new: true})
-  
+  const blog = await Blog.findByIdAndUpdate(request.params.id, { title, author, url, likes } , { new: true })
+
   response.send(blog)
 })
 

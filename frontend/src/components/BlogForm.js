@@ -30,7 +30,7 @@ const BlogForm = ({ title, author, url, handleChange, handleSubmit }) => {
             name='url'
             onChange={handleChange}
           />
-        </div>        
+        </div>
 
         <button type="submit">Luo</button>
       </form>
@@ -45,6 +45,5 @@ BlogForm.propTypes = {
   title: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired
 }
-
 
 export default BlogForm

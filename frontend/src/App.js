@@ -2,6 +2,7 @@ import React from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -13,7 +14,7 @@ class App extends React.Component {
       blogs: [],
       user: null,
       username: '',
-      password: '', 
+      password: '',
       title: '',
       author: '',
       url: '',
@@ -31,7 +32,7 @@ class App extends React.Component {
       this.setState({ user })
       blogService.setToken(user.token)
     }
-  } 
+  }
 
   notify = (message, type = 'info') => {
     this.setState({
@@ -42,12 +43,12 @@ class App extends React.Component {
     setTimeout(() => {
       this.setState({
         notification: null
-      })     
+      })
     }, 10000)
   }
 
   like = (id) => async () => {
-    const liked = this.state.blogs.find(b=>b._id===id)
+    const liked = this.state.blogs.find(b => b._id===id)
     const updated = { ...liked, likes: liked.likes + 1 }
     await blogService.update(id, updated)
     this.notify(`you liked '${updated.title}' by ${updated.author}`)
@@ -58,15 +59,15 @@ class App extends React.Component {
 
   remove = (id) => async () => {
     const deleted = this.state.blogs.find(b => b._id === id)
-    const ok = window.confirm(`remove blog '${deleted.title}' by ${deleted.author}?`)
-    if ( ok===false) {
+    const ok = window.confirm(`remove blog '${ deleted.title }' by ${ deleted.author }?`)
+    if ( ok === false) {
       return
     }
 
     await blogService.remove(id)
-    this.notify(`blog '${deleted.title}' by ${deleted.author} removed`)
+    this.notify(`blog '${ deleted.title }' by ${ deleted.author } removed`)
     this.setState({
-      blogs: this.state.blogs.filter(b=>b._id!==id)
+      blogs: this.state.blogs.filter(b => b._id !== id)
     })
   }
 
@@ -77,12 +78,12 @@ class App extends React.Component {
       author: this.state.author,
       url: this.state.url,
     }
-    
-    const result = await blogService.create(blog) 
+
+    const result = await blogService.create(blog)
     this.notify(`blog '${blog.title}' by ${blog.author} added`)
-    this.setState({ 
-      title: '', 
-      url: '', 
+    this.setState({
+      title: '',
+      url: '',
       author: '',
       blogs: this.state.blogs.concat(result)
     })
@@ -118,68 +119,47 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.user === null) {
-      return (
-        <div>
-          <Notification notification={this.state.notification} />
-          <h2>Kirjaudu sovellukseen</h2>
-          <form onSubmit={this.login}>
-            <div>
-              käyttäjätunnus
-              <input
-                type="text"
-                name="username"
-                value={this.state.username}
-                onChange={this.handleLoginChange}
-              />
-            </div>
-            <div>
-              salasana
-              <input
-                type="password"
-                name="password"
-                value={this.state.password}
-                onChange={this.handleLoginChange}
-              />
-            </div>
-            <button type="submit">kirjaudu</button>
-          </form>
-        </div>
-      )
-    }
-
     const byLikes = (b1, b2) => b2.likes - b1.likes
-
     const blogsInOrder = this.state.blogs.sort(byLikes)
 
     return (
-      <div>
-        <Notification notification={this.state.notification} />
-
-        {this.state.user.name} logged in <button onClick={this.logout}>logout</button>
-
-        <Togglable buttonLabel='uusi blogi'>
-          <BlogForm 
-            handleChange={this.handleLoginChange}
-            title={this.state.title}
-            author={this.state.author}
-            url={this.state.url}
-            handleSubmit={this.addBlog}
+      <div className="kokoSivu">
+        <h1>Herra Hakkaraisen blogisivut</h1>
+        <Notification notification={ this.state.notification } />
+        {this.state.user === null ?
+          <LoginForm
+            username={ this.state.username }
+            password={ this.state.password }
+            handleChange={ this.handleLoginChange }
+            handleSubmit={ this.login }
           />
-        </Togglable>
+          :
+          <div>
+            { this.state.user.name } logged in <button onClick={ this.logout }>logout</button>
+            <Togglable buttonLabel='uusi blogi'>
+              <BlogForm
+                handleChange={ this.handleLoginChange }
+                title={ this.state.title }
+                author={ this.state.author }
+                url={ this.state.url }
+                handleSubmit={ this.addBlog }
+              />
+            </Togglable>
 
-        <h2>blogs</h2>
-        {blogsInOrder.map(blog => 
-          <Blog 
-            key={blog._id} 
-            blog={blog} 
-            like={this.like(blog._id)}
-            remove={this.remove(blog._id)}
-            deletable={blog.user === undefined || blog.user.username === this.state.user.username}
-          />
-        )}
+            <h2>blogs</h2>
+            {blogsInOrder.map(blog =>
+              <Blog
+                key={ blog._id }
+                blog={ blog }
+                like={ this.like(blog._id) }
+                remove={ this.remove(blog._id) }
+                deletable={ blog.user === undefined || blog.user.username === this.state.user.username }
+              />
+            )}
+          </div>
+        }
       </div>
-    );
+    )
   }
 }
 
