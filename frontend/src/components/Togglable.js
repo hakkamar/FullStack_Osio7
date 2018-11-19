@@ -1,33 +1,34 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { visibleChange } from './../reducers/visibleReducer'
 
-class Togglable extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      visible: false
-    }
-  }
+const toggleVisibility = async (props) => {
+  props.visibleChange()
+}
 
-  toggleVisibility = () => {
-    this.setState({ visible: !this.state.visible })
-  }
+//       {this.props.children} ????????
 
-  render() {
-    const hideWhenVisible = { display: this.state.visible ? 'none' : '' }
-    const showWhenVisible = { display: this.state.visible ? '' : 'none' }
+const Togglable = (props) => (
+  <div>
+    <div style={ { display: props.visible ? 'none' : '' } }>
+      <button onClick={ () => toggleVisibility(props) }> create new </button>
+    </div>
+    <div style={ { display: props.visible ? '' : 'none' } }>
+      {props.children}
+      <button onClick={ () => toggleVisibility(props) }>cancel</button>
+    </div>
+  </div>
+)
 
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={this.toggleVisibility}>{this.props.buttonLabel}</button>
-        </div>
-        <div style={showWhenVisible}>
-          {this.props.children}
-          <button onClick={this.toggleVisibility}>cancel</button>
-        </div>
-      </div>
-    )
+const mapStateToProps = (state) => {
+  return {
+    visible: state.visible
   }
 }
 
-export default Togglable
+const ConnectedTogglable = connect(
+  mapStateToProps,
+  { visibleChange }
+)(Togglable)
+
+export default ConnectedTogglable

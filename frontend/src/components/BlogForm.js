@@ -1,49 +1,108 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { blogCreation } from './../reducers/blogReducer'
+import { notificationChange } from './../reducers/notificationReducer'
 
-const BlogForm = ({ title, author, url, handleChange, handleSubmit }) => {
-  return (
-    <div>
-      <h2>Luo uusi blogi</h2>
+var title = ''
+var url = ''
+var author = ''
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          title
-          <input
-            value={title}
-            name='title'
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          author
-          <input
-            value={author}
-            name='author'
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          url
-          <input
-            value={url}
-            name='url'
-            onChange={handleChange}
-          />
-        </div>
+const addBlog = async (props) => {
+  //
+  //event.preventDefault()
+  //
+  //
 
-        <button type="submit">Luo</button>
-      </form>
-    </div>
-  )
+  const Uusiblog = {
+    title: title,
+    author: author,
+    url: url
+  }
+  props.blogCreation(Uusiblog)
+
+  const teksti = `blog '${Uusiblog.title}' by ${Uusiblog.author} added`
+  props.notificationChange(teksti)
+
+  title = ''
+  url = ''
+  author = ''
 }
 
-BlogForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  author: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired
+class BlogForm extends React.Component {
+
+  handleFieldChange = async (event) => {
+    //event.preventDefault()
+    switch (event.target.name) {
+    case 'title': {
+      console.log('title')
+      title = event.target.value
+      break
+    }
+    case 'author': {
+      console.log('author')
+      author = event.target.value
+      break
+    }
+    case 'url': {
+      console.log('url')
+      url = event.target.value
+      break
+    }
+    default: {
+      console.log(' no nyt pomppas... BlogForm/handleFieldChange ????')
+      break
+    }
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <h2>Luo uusi blogi</h2>
+
+        <form onSubmit={() => addBlog(this.props)}>
+          <div>
+            title
+            <input
+              value={this.value}
+              name='title'
+              onChange={this.handleFieldChange}
+            />
+          </div>
+          <div>
+            author
+            <input
+              value={this.value}
+              name='author'
+              onChange={this.handleFieldChange}
+            />
+          </div>
+          <div>
+            url
+            <input
+              value={this.value}
+              name='url'
+              onChange={this.handleFieldChange}
+            />
+          </div>
+
+          <button type="submit">Luo</button>
+        </form>
+      </div>
+    )
+  }
 }
 
-export default BlogForm
+const mapStateToProps = (state) => {
+  return {
+    blog: state.blog,
+    notification: state.notification
+  }
+}
+
+const ConnectedBlogForm = connect(
+  mapStateToProps,
+  { blogCreation, notificationChange }
+)(BlogForm)
+
+export default ConnectedBlogForm

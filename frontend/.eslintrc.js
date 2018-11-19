@@ -4,7 +4,6 @@ module.exports = {
         "node": true,
         "jest": true
     },
-    "parser": "babel-eslint",
     "extends": "eslint:recommended",
     "rules": {
         "indent": [
@@ -33,7 +32,13 @@ module.exports = {
         ],
         "no-console": 0
     },
+    "parser": "babel-eslint",
     "parserOptions": {
-        "ecmaVersion": 2018
+        "ecmaVersion": 2018,
+        "sourceType": "module",
+        "allowImportExportEverywhere": true,
+        "ecmaFeatures": {
+            "jsx": true
+        }
     }
 };
