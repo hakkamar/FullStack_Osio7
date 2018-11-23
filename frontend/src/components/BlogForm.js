@@ -18,7 +18,11 @@ const addBlog = async (props) => {
     author: author,
     url: url
   }
+
+  console.log('* addBlog - ---------------------------------')
+  console.log('* addBlog - Uusiblog', Uusiblog)
   props.blogCreation(Uusiblog)
+  console.log('* addBlog - ---------------------------------')
 
   const teksti = `blog '${Uusiblog.title}' by ${Uusiblog.author} added`
   props.notificationChange(teksti)
@@ -34,17 +38,14 @@ class BlogForm extends React.Component {
     //event.preventDefault()
     switch (event.target.name) {
     case 'title': {
-      console.log('title')
       title = event.target.value
       break
     }
     case 'author': {
-      console.log('author')
       author = event.target.value
       break
     }
     case 'url': {
-      console.log('url')
       url = event.target.value
       break
     }

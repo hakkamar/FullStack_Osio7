@@ -1,4 +1,4 @@
-const visibleReducer = (state = true, action) => {
+const visibleReducer = (state = false, action) => {
   switch (action.type) {
   case 'CHANGE':
     return !state

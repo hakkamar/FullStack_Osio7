@@ -1,20 +1,22 @@
-import userService from './../services/users'
 
 const userReducer = (store = null, action) => {
   switch (action.type) {
-  case 'UPDATE': {
-    console.log('user update: ', action.data)
-
+  case 'UPDATE_USER': {
+    //console.log('user update: ', action.data)
     //return [...store, action.data]
     return action.data
   }
+  /*
   case 'INIT_USERS':
     return action.data
+  */
+  case 'DELETE_USER':
+    return null
   default:
     return store
   }
 }
-
+/*
 export const userInitialization = () => {
   return async (dispatch) => {
     const users = await userService.getAll()
@@ -24,14 +26,23 @@ export const userInitialization = () => {
     })
   }
 }
+*/
 
 export const userUpdate = (content) => {
-
-  console.log('userUpdate -----------', content)
+  //console.log('userUpdate -----------', content)
   return async (dispatch) => {
-    dispatch({
-      type: 'UPDATE',
+    await dispatch({
+      type: 'UPDATE_USER',
       data: content
+    })
+  }
+}
+
+export const userDelete = () => {
+  //console.log('userDelete -----------', )
+  return async (dispatch) => {
+    await dispatch({
+      type: 'DELETE_USER'
     })
   }
 }

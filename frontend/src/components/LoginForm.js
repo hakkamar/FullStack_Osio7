@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { notificationChange } from './../reducers/notificationReducer'
-import { userUpdate } from './../reducers/userReducer'
+import { userUpdate, userDelete  } from './../reducers/userReducer'
 import loginService from './../services/login'
 import blogService from './../services/blogs'
 
@@ -34,7 +34,7 @@ const login = async (props) => {
   } catch (exception) {
 
     console.log(' kiville meni?????')
-
+    props.userDelete()
     const teksti = 'käyttäjätunnus tai salasana virheellinen'
     props.notificationChange(teksti)
   }
@@ -100,7 +100,7 @@ const mapStateToProps = (state) => {
 
 const ConnectedLoginForm = connect(
   mapStateToProps,
-  { notificationChange, userUpdate }
+  { notificationChange, userUpdate, userDelete }
 )(LoginForm)
 
 export default ConnectedLoginForm

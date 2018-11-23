@@ -2,6 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { blogLike, blogDelete } from './../reducers/blogReducer'
 import { notificationChange } from './../reducers/notificationReducer'
+import BlogForm from './BlogForm'
+import Togglable from './Togglable'
 
 const blogStyle = {
   paddingTop: 10,
@@ -12,8 +14,6 @@ const blogStyle = {
 }
 
 const like = async (props, blog) => {
-
-  console.log('like - ', blog)
   props.blogLike(blog)
 
   const teksti = `you liked '${blog.title}' by ${blog.author}`
@@ -30,7 +30,6 @@ const remove =  async (props, blog) => {
   props.notificationChange(teksti)
 }
 
-
 class BlogList extends React.Component {
   constructor() {
     super()
@@ -40,7 +39,7 @@ class BlogList extends React.Component {
   }
 
   lisaaja = (blog) => {
-    if (blog === undefined || this.props.user.user === null ) {
+    if (blog === undefined || this.props.user === null ) {
       return <div> added by anonymous </div>
     }
     if (this.props.user.user !== undefined) {
@@ -70,6 +69,15 @@ class BlogList extends React.Component {
 
     return (
       <div>
+        <div>
+          {this.props.user !== null ?
+            <Togglable>
+              <BlogForm />
+            </Togglable>
+            : <div> <p>Blogeja voi luoda vain kirjautunut käyttäjä</p> </div>
+          }
+        </div>
+        <h2>blogs</h2>
         {this.props.naytettavatBlogit.map(blog =>
           <div key={ blog._id } style={ blogStyle }>
             <div

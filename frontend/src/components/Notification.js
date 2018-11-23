@@ -10,6 +10,7 @@ const infoStyle = {
   marginBottom: 5
 }
 
+/*
 const errorStyle = {
   color: 'red',
   paddingTop: 10,
@@ -18,6 +19,7 @@ const errorStyle = {
   borderWidth: 1,
   marginBottom: 5
 }
+*/
 
 class Notification extends React.Component {
   render () {

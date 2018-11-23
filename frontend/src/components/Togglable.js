@@ -11,7 +11,7 @@ const toggleVisibility = async (props) => {
 const Togglable = (props) => (
   <div>
     <div style={ { display: props.visible ? 'none' : '' } }>
-      <button onClick={ () => toggleVisibility(props) }> create new </button>
+      <button onClick={ () => toggleVisibility(props) }> create new blog </button>
     </div>
     <div style={ { display: props.visible ? '' : 'none' } }>
       {props.children}
