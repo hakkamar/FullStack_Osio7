@@ -7,14 +7,12 @@ import { userUpdate, userDelete } from './reducers/userReducer'
 import { notificationChange } from './reducers/notificationReducer'
 import { juuuseritInitialization } from './reducers/juuseritReducer'
 
-
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-//import LoggedAndLogOut from './components/LoggedAndLogOut'
 import BlogList from './components/BlogList'
 import UserList from './components/UserList'
-
-var iidee = ''
+import Blogi from './components/Blogi'
+import Juuseri from './components/Juuseri'
 
 const Home = () => (
   <div>
@@ -22,36 +20,6 @@ const Home = () => (
     <p>Vain kirjautunut käyttäjä voi lisätä blogeja.</p>
   </div>
 )
-
-const Juuseri = ({ juuseri } ) => {
-
-  /*
-  console.log('Juuseri ', juuseri)
-  console.log('Juuseri ', props)
-
-  if (juuseri === undefined) {
-    console.log('haetaan juuserit', iidee)
-    props.juuuseritInitialization()
-    console.log('props.juuserit ', props.juuserit)
-    juuseri = props.juuserit.find(x => x.id === iidee)
-    console.log('juurseri', juuseri)
-  }
-  */
-
-  return(
-    <div>
-      <h2>{juuseri.name}</h2>
-      <h3>Added blogs</h3>
-      <ul>
-        {juuseri.blogs.map(b =>
-          <li key={ b._id }>
-            {b.title} by {b.author}
-          </li>
-        )}
-      </ul>
-    </div>
-  )
-}
 
 const logout = async (props) => {
   window.localStorage.removeItem('loggedBlogAppUser')
@@ -62,7 +30,6 @@ const logout = async (props) => {
 
 class App extends React.Component {
   componentDidMount () {
-    console.log('componentDidMount')
     this.props.blogInitialization()
     this.props.juuuseritInitialization()
 
@@ -75,13 +42,12 @@ class App extends React.Component {
   }
 
   render() {
-    console.log('App - render')
-
     const userById = (props, id) => {
-      console.log('userById.... ', props)
-      console.log('userById.... ', id)
-      iidee = id
       return props.juuserit.find(u => u.id === id)
+    }
+
+    const blogById = (props, id) => {
+      return props.blog.find(u => u._id === id)
     }
 
     const loggautunut = (props) => {
@@ -111,6 +77,9 @@ class App extends React.Component {
                 : <Home />
             } />
             <Route exact path="/blogs" render={() => <BlogList /> } />
+            <Route exact path="/blogs/:id" render={({ match, history }) =>
+              <Blogi history={history} blogi={blogById(this.props, match.params.id)} />}
+            />
             <Route exact path="/users" render={() => <UserList />} />
             <Route exact path="/users/:id" render={({ match }) =>
               <Juuseri juuseri={userById(this.props, match.params.id)} />}
@@ -128,6 +97,7 @@ class App extends React.Component {
           <div>----------------------------------------------------------------------------</div>
           <em>Hakkiksen blogisivut, FullStack devausta vuodesta 2018</em>
           <div>----------------------------------------------------------------------------</div>
+          <p></p>
         </div>
       </div>
     )
@@ -137,6 +107,7 @@ class App extends React.Component {
 const mapStateToProps = (state) => {
   return {
     user: state.user,
+    blog: state.blog,
     juuserit: state.juuserit
   }
 }

@@ -8,7 +8,6 @@ const notificationReducer = (state = '', action) => {
 }
 
 export const notificationChange = (teksti) => {
-  console.log('notificationChange --- ', teksti)
   return async (dispatch) => {
     dispatch({
       type: 'NOTIFICATION',

@@ -18,11 +18,7 @@ const addBlog = async (props) => {
     author: author,
     url: url
   }
-
-  console.log('* addBlog - ---------------------------------')
-  console.log('* addBlog - Uusiblog', Uusiblog)
   props.blogCreation(Uusiblog)
-  console.log('* addBlog - ---------------------------------')
 
   const teksti = `blog '${Uusiblog.title}' by ${Uusiblog.author} added`
   props.notificationChange(teksti)

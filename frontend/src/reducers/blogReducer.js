@@ -33,9 +33,6 @@ export const blogInitialization = () => {
 }
 
 export const blogCreation = (content) => {
-  console.log('blogCreation - -----------')
-  console.log('blogCreation - content ', content)
-  console.log('blogCreation - -----------')
   return async (dispatch) => {
     const newBlog = await blogService.create(content)
     dispatch({
@@ -46,12 +43,6 @@ export const blogCreation = (content) => {
 }
 
 export const blogDelete = (blog) => {
-
-  console.log('blogDelete - -----------')
-  console.log('blogDelete - id ', blog.id)
-  console.log('blogDelete - _id ', blog._id)
-  console.log('blogDelete - -----------')
-
   return async (dispatch) => {
     await blogService.remove(blog._id)
     dispatch({
@@ -64,17 +55,6 @@ export const blogDelete = (blog) => {
 }
 
 export const blogLike = (blog) => {
-  /*
-  console.log('blogLike - -----------')
-  console.log('blogLike - id ', blog.id)
-  console.log('blogLike - _id ', blog._id)
-  console.log('blogLike - likes ', blog.likes)
-  //console.log('blogLike - user ', blog.user)
-  //console.log('blogLike - author ', blog.author)
-  //console.log('blogLike - title ', blog.title)
-  //console.log('blogLike - url ', blog.url)
-  */
-  
   return async (dispatch) => {
     const uusiLike = blog.likes + 1
     const updatedBlog = {
@@ -86,9 +66,6 @@ export const blogLike = (blog) => {
       url: blog.url
     }
     await blogService.update(blog._id, updatedBlog)
-    //console.log('blogLike - id ', blog.id)
-    //console.log('blogLike - _id ', blog._id)
-    //console.log('blogLike - -----------')
     dispatch({
       type: 'LIKE_BLOG',
       data: {

@@ -9,36 +9,26 @@ var kayttajatunnus = ''
 var salasana = ''
 
 const login = async (props) => {
-  console.log('login ->')
 
   props.userUpdate({ username: kayttajatunnus, password: salasana })
-
-  //console.log('notification', props.notification)
-  //console.log('user', props.user)
 
   try {
     const user = await loginService.login({
       username: kayttajatunnus,
       password: salasana
     })
-    //console.log(' user', user)
     window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
     blogService.setToken(user.token)
-    //console.log(' user.token', user.token)
 
-    const teksti = 'welcome back!'
-    props.notificationChange(teksti)
+    props.notificationChange('welcome back!')
     props.userUpdate({ user })
-    //props.juseriUpdate({ username: '', password: '', user })
 
   } catch (exception) {
 
     console.log(' kiville meni?????')
     props.userDelete()
-    const teksti = 'käyttäjätunnus tai salasana virheellinen'
-    props.notificationChange(teksti)
+    props.notificationChange('käyttäjätunnus tai salasana virheellinen')
   }
-  console.log('login <-')
 }
 
 
@@ -53,13 +43,6 @@ class LoginForm extends React.Component {
   handlePasswFieldChange = async (e) => {
     e.preventDefault()
     salasana = e.target.value
-    /*
-    e.target.value = ''
-    this.props.anecdoteCreation(content)
-
-    const teksti = 'Created new anecdote: ' + content
-    this.props.notificationChange(teksti, 5)
-    */
   }
 
   render () {
