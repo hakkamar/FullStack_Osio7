@@ -1,7 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { blogLike, blogDelete } from './../reducers/blogReducer'
+import { blogLike, blogDelete, blogComment } from './../reducers/blogReducer'
 import { notificationChange } from './../reducers/notificationReducer'
+
+var kommentti = ''
 
 const remove =  async (props, blog, history) => {
   const ok = window.confirm(`remove blog '${ blog.title }' by ${ blog.author }?`)
@@ -15,6 +17,21 @@ const remove =  async (props, blog, history) => {
 }
 
 class Blogi extends React.Component {
+
+  handleFieldChange = async (event) => {
+    event.preventDefault()
+
+    switch (event.target.name) {
+    case 'comment': {
+      kommentti = event.target.value
+      break
+    }
+    default: {
+      console.log(' no nyt pomppas... CommentForm/handleFieldChange ????')
+      break
+    }
+    }
+  }
 
   lisaaja = (blog, history) => {
     if (blog === undefined || this.props.user === null ) {
@@ -49,6 +66,18 @@ class Blogi extends React.Component {
       this.props.notificationChange(teksti)
     }
 
+    const addComment = async (blogi) => {
+      this.props.blogComment(blogi, kommentti)
+
+      const teksti = `blogille '${blogi.title}' lisätty kommentti '${kommentti}'`
+      this.props.notificationChange(teksti)
+      kommentti = ''
+
+      //console.log('addComment - history.location.pathname', history.location.pathname)
+      //history.push(history.location.pathname)
+      history.push('/blogs')
+    }
+
     return(
       <div>
         <h2>{blogi.title} - {blogi.author}</h2>
@@ -57,12 +86,38 @@ class Blogi extends React.Component {
         </div>
         <div> {blogi.likes} likes <button onClick={ () => like(blogi) }>like</button> </div>
         <div> {this.lisaaja(blogi, history) } </div>
+        <p></p>
+        <h2>comments</h2>
+        <p></p>
+
+
+        <form onSubmit={ () => addComment(blogi) }>
+          <div>
+            <input
+              value={this.value}
+              name='comment'
+              onChange={this.handleFieldChange}
+            />
+            <button type="submit">Kommentoi</button>
+          </div>
+        </form>
+
+
+        <p></p>
+        <ul>
+          {blogi.comment.map(c =>
+            <li key={ c._id }>
+              <div> {c.comment} </div>
+            </li>
+          )}
+        </ul>
       </div>
     )
   }
 }
 
 const mapStateToProps = (state) => {
+  console.log('Blogi - mapStateToProps ')
   return {
     user: state.user
   }
@@ -70,7 +125,7 @@ const mapStateToProps = (state) => {
 
 const ConnectedBlogi = connect(
   mapStateToProps,
-  { blogLike, blogDelete, notificationChange }
+  { blogLike, blogDelete, blogComment, notificationChange }
 )(Blogi)
 
 export default ConnectedBlogi

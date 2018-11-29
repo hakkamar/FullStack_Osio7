@@ -2,21 +2,23 @@ const blogRouter = require('express').Router()
 const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const Comment = require('../models/comment')
 
 blogRouter.get('/', async (request, response) => {
-  console.log('haetaan kaikki')
 
+  console.log('haetaan kaikki')
 
   const blogs = await Blog
     .find({})
     .populate('user', { username: 1, name: 1 })
+    .populate('comment', { blogi: 1, comment: 1 })
 
   response.json(blogs)
 })
 
 blogRouter.get('/:id', async (request, response) => {
-  console.log('haetaan iideellä', request.params.id)
 
+  console.log('haetaan iideellä', request.params.id)
 
   try {
     const blog = await Blog.findById(request.params.id)
@@ -29,6 +31,35 @@ blogRouter.get('/:id', async (request, response) => {
     console.log(exception)
     response.status(400).send({ error: 'malformatted id' })
   }
+})
+
+blogRouter.post('/:id/comments', async (request, response) => {
+
+  console.log('lisätään uusi kommentti !!!!')
+  console.log('request.body.comment', request.body.comment)
+
+  try {
+    const kommentti = request.body.comment
+    const blogi_iidee = request.body.blogi
+
+    const comment = new Comment( { blogi: blogi_iidee, comment: kommentti } )
+    const result = await comment.save()
+
+    const blog = await Blog.findById(blogi_iidee)
+    blog.comment = blog.comment.concat(comment)
+    await blog.save()
+
+    response.status(201).json(result)
+
+  } catch (exception) {
+    if (exception.name === 'JsonWebTokenError') {
+      response.status(401).json({ error: exception.message })
+    } else {
+      console.log(exception)
+      response.status(500).json({ error: 'something went REALLY wrong...' })
+    }
+  }
+
 })
 
 blogRouter.post('/', async (request, response) => {

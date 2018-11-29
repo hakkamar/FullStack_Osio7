@@ -18,6 +18,7 @@ const Home = () => (
   <div>
     <p>Tervetuloa sivuille. Liiku valikossa olevilla valinnoilla.</p>
     <p>Vain kirjautunut käyttäjä voi lisätä blogeja.</p>
+    <p>Kuka vaan voi kommentoida blogeja.</p>
   </div>
 )
 
@@ -105,6 +106,7 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log('App - mapStateToProps ')
   return {
     user: state.user,
     blog: state.blog,

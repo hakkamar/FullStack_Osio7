@@ -9,6 +9,13 @@ const blogReducer = (store = [], action) => {
 
     return [...old, { ...liked, likes: liked.likes + 1 } ]
   }
+  case 'COMMENT_BLOG': {
+    const old = store.filter(a => a._id !== action.data.blogi)
+    const commented = store.find(a => a._id === action.data.blogi)
+    const kommentoitu = commented.comment.concat(action.data)
+
+    return [...old, { ...commented, comment: kommentoitu } ]
+  }
   case 'CREATE_BLOG':
     return [...store, action.data]
   case 'DELETE_BLOG': {
@@ -63,13 +70,32 @@ export const blogLike = (blog) => {
       likes: uusiLike,
       author: blog.author,
       title: blog.title,
-      url: blog.url
+      url: blog.url,
+      comment: blog.comment
     }
     await blogService.update(blog._id, updatedBlog)
     dispatch({
       type: 'LIKE_BLOG',
       data: {
         id: blog._id
+      }
+    })
+  }
+}
+
+export const blogComment = (blog, kommentti) => {
+  return async (dispatch) => {
+    const newComment = {
+      blogi: blog._id,
+      comment: kommentti
+    }
+    const uusiCommentti = await blogService.updateComment(blog._id, newComment)
+    dispatch({
+      type: 'COMMENT_BLOG',
+      data: {
+        id: uusiCommentti._id,
+        blogi: blog._id,
+        comment: kommentti
       }
     })
   }

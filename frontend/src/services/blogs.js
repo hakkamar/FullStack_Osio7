@@ -14,9 +14,9 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
-const getOne = (id) => {
-  const request = axios.get(`${baseUrl}/${id}`)
-  return request.then(response => response.data)
+const getOne = async (id) => {
+  const response = await axios.get(`${baseUrl}/${id}`)
+  return response.data
 }
 
 const setToken = (newToken) => {
@@ -33,9 +33,14 @@ const update = (id, newObject) => {
   return request.then(response => response.data)
 }
 
+const updateComment = (id, newObject) => {
+  const request = axios.post(`${baseUrl}/${id}/comments`, newObject)
+  return request.then(response => response.data)
+}
+
 const remove = (id) => {
   const request = axios.delete(`${baseUrl}/${id}`, config())
   return request.then(response => response.data)
 }
 
-export default { getAll, getOne, create, update, remove, setToken }
+export default { getAll, getOne, create, update, updateComment, remove, setToken }
