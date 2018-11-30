@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Form, Button } from 'semantic-ui-react'
 import { notificationChange } from './../reducers/notificationReducer'
 import { userUpdate, userDelete  } from './../reducers/userReducer'
 import loginService from './../services/login'
@@ -24,14 +25,10 @@ const login = async (props) => {
     props.userUpdate({ user })
 
   } catch (exception) {
-
-    console.log(' kiville meni?????')
     props.userDelete()
-    props.notificationChange('käyttäjätunnus tai salasana virheellinen')
+    props.notificationChange('error: käyttäjätunnus tai salasana virheellinen')
   }
 }
-
-
 
 class LoginForm extends React.Component {
 
@@ -49,26 +46,25 @@ class LoginForm extends React.Component {
     return (
       <div className="kirjauduDiv">
         <h2>Kirjaudu</h2>
-
-        <form onSubmit={() => login(this.props)}>
-          <div>
-            käyttäjätunnus
+        <Form onSubmit={() => login(this.props)}>
+          <Form.Field>
+            <label>käyttäjätunnus</label>
             <input
               type="text"
               name="username"
               onChange={this.handleUserFieldChange }
             />
-          </div>
-          <div>
-            salasana
+          </Form.Field>
+          <Form.Field>
+            <label>salasana</label>
             <input
               type="password"
               name="password"
               onChange={this.handlePasswFieldChange}
             />
-          </div>
-          <button>kirjaudu</button>
-        </form>
+          </Form.Field>
+          <Button size='tiny'>kirjaudu</Button>
+        </Form>
       </div>
     )
   }

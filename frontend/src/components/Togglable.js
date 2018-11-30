@@ -1,22 +1,24 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Button } from 'semantic-ui-react'
 import { visibleChange } from './../reducers/visibleReducer'
 
 const toggleVisibility = async (props) => {
   props.visibleChange()
 }
 
-//       {this.props.children} ????????
-
 const Togglable = (props) => (
   <div>
+    <p></p>
     <div style={ { display: props.visible ? 'none' : '' } }>
-      <button onClick={ () => toggleVisibility(props) }> create new blog </button>
+      <Button onClick={ () => toggleVisibility(props) }> create new blog </Button>
     </div>
     <div style={ { display: props.visible ? '' : 'none' } }>
       {props.children}
-      <button onClick={ () => toggleVisibility(props) }>cancel</button>
+      <p></p>
+      <Button onClick={ () => toggleVisibility(props) }>close "create new blog" form</Button>      
     </div>
+    <p></p>
   </div>
 )
 

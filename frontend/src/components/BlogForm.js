@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Form, Button } from 'semantic-ui-react'
 import { blogCreation } from './../reducers/blogReducer'
 import { notificationChange } from './../reducers/notificationReducer'
 
@@ -8,24 +9,22 @@ var url = ''
 var author = ''
 
 const addBlog = async (props) => {
-  //
-  //event.preventDefault()
-  //
-  //
-
-  const Uusiblog = {
-    title: title,
-    author: author,
-    url: url
+  var teksti = ''
+  if (title === '' || author === '' || url === '') {
+    teksti = 'error: Anna title, author ja url'
+  } else {
+    const Uusiblog = {
+      title: title,
+      author: author,
+      url: url
+    }
+    props.blogCreation(Uusiblog)
+    teksti = `blog '${Uusiblog.title}' by ${Uusiblog.author} added`
+    title = ''
+    url = ''
+    author = ''
   }
-  props.blogCreation(Uusiblog)
-
-  const teksti = `blog '${Uusiblog.title}' by ${Uusiblog.author} added`
   props.notificationChange(teksti)
-
-  title = ''
-  url = ''
-  author = ''
 }
 
 class BlogForm extends React.Component {
@@ -56,35 +55,36 @@ class BlogForm extends React.Component {
     return (
       <div>
         <h2>Luo uusi blogi</h2>
-
-        <form onSubmit={() => addBlog(this.props)}>
-          <div>
-            title
+        <Form onSubmit={() => addBlog(this.props)}>
+          <Form.Field>
+            <label>title</label>
             <input
+              placeholder='Joku kivan Blogin otsikko...'
               value={this.value}
               name='title'
               onChange={this.handleFieldChange}
             />
-          </div>
-          <div>
-            author
+          </Form.Field>
+          <Form.Field>
+            <label>author</label>
             <input
+              placeholder='Blobgin kirjoittaja...'
               value={this.value}
               name='author'
               onChange={this.handleFieldChange}
             />
-          </div>
-          <div>
-            url
+          </Form.Field>
+          <Form.Field>
+            <label>url</label>
             <input
+              placeholder='JeeJeeJee -sivu mistä blogi löytyy'
               value={this.value}
               name='url'
               onChange={this.handleFieldChange}
             />
-          </div>
-
-          <button type="submit">Luo</button>
-        </form>
+          </Form.Field>
+          <Button type="submit">Luo</Button>
+        </Form>
       </div>
     )
   }

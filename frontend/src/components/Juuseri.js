@@ -1,4 +1,5 @@
 import React from 'react'
+import { Icon, List } from 'semantic-ui-react'
 
 class Juuseri extends React.Component {
   render () {
@@ -8,13 +9,17 @@ class Juuseri extends React.Component {
       <div>
         <h2>{juuseri.name}</h2>
         <h3>Added blogs</h3>
-        <ul>
+        <List>
           {juuseri.blogs.map(b =>
-            <li key={ b._id }>
-              {b.title} by {b.author}
-            </li>
+            <List.Item as='a' key={ b._id }>
+              <Icon name='right triangle' />
+              <List.Content>
+                <List.Header> {b.title} </List.Header>
+                <List.Description> {b.author} </List.Description>
+              </List.Content>
+            </List.Item>
           )}
-        </ul>
+        </List>
       </div>
     )
   }

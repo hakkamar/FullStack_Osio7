@@ -1,22 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Table } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import BlogForm from './BlogForm'
 import Togglable from './Togglable'
-
-const blogStyle = {
-  paddingTop: 10,
-  paddingLeft: 2,
-  border: 'solid',
-  borderWidth: 1,
-  marginBottom: 5
-}
 
 class BlogList extends React.Component {
   render () {
     return (
       <div>
-        <div className='formi'>
+        <div className='blogiFormi'>
           {this.props.user !== null ?
             <Togglable>
               <BlogForm />
@@ -24,13 +17,23 @@ class BlogList extends React.Component {
             : <div> <p>Blogeja voi luoda vain kirjautunut käyttäjä</p> </div>
           }
         </div>
-        <h2>blogs</h2>
-        <div className='blogiLista'>
-          {this.props.naytettavatBlogit.map(blog =>
-            <div key={ blog._id } style={ blogStyle }>
-              <Link to={`/blogs/${blog._id}`}>{blog.title} {blog.author}</Link>
-            </div>
-          )}
+        <p></p>
+        <div>
+          <h2>Blogs</h2>
+          <Table striped celled>
+            <Table.Body>
+              {this.props.naytettavatBlogit.map(blog =>
+                <Table.Row key={ blog._id }>
+                  <Table.Cell>
+                    <Link to={`/blogs/${blog._id}`}>{blog.title} </Link>
+                  </Table.Cell>
+                  <Table.Cell>
+                    {blog.author}
+                  </Table.Cell>
+                </Table.Row>
+              )} 
+            </Table.Body>
+          </Table>
         </div>
       </div>
     )

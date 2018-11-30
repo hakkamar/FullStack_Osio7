@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Button, Icon, Label } from 'semantic-ui-react'
 import { blogLike, blogDelete, blogComment } from './../reducers/blogReducer'
 import { notificationChange } from './../reducers/notificationReducer'
 
@@ -42,7 +43,7 @@ class Blogi extends React.Component {
         return (
           <div>
             <div> added by { blog.user.name } </div>
-            <div><button onClick={ () => remove(this.props, blog, history) }>delete</button></div>
+            <div><Button fluid size='tiny' onClick={ () => remove(this.props, blog, history) }>delete blog</Button></div>
           </div>
         )
       } else {
@@ -84,7 +85,19 @@ class Blogi extends React.Component {
         <div>
           <a href={blogi.url}>{blogi.url}</a>
         </div>
-        <div> {blogi.likes} likes <button onClick={ () => like(blogi) }>like</button> </div>
+        <p></p>
+        <div>
+          <Button as='div' labelPosition='left'>
+            <Label as='a' basic pointing='right'>
+              {blogi.likes} likes
+            </Label>
+            <Button icon color='red' onClick={ () => like(blogi) }>
+              <Icon name='heart' />
+                Like
+            </Button>
+          </Button>
+        </div>
+        <p></p>
         <div> {this.lisaaja(blogi, history) } </div>
         <p></p>
         <h2>comments</h2>
@@ -98,7 +111,7 @@ class Blogi extends React.Component {
               name='comment'
               onChange={this.handleFieldChange}
             />
-            <button type="submit">Kommentoi</button>
+            <Button type="submit">Kommentoi</Button>
           </div>
         </form>
 
@@ -117,7 +130,6 @@ class Blogi extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log('Blogi - mapStateToProps ')
   return {
     user: state.user
   }

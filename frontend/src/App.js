@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom'
+import { Container, Button, Menu, Divider, Header, Flag, Segment } from 'semantic-ui-react'
 import blogService from './services/blogs'
 import { connect } from 'react-redux'
 import { blogInitialization } from './reducers/blogReducer'
@@ -55,58 +56,74 @@ class App extends React.Component {
       if (!props.user.user) {
         return <em>loggaudutaan...</em>
       }
-      return <em>{this.props.user.user.name} logged in <button onClick={ () => logout(this.props) }>logout</button></em>
+      return <em>{this.props.user.user.name} logged in <Button size='mini' inverted color='grey' onClick={ () => logout(this.props) }>logout</Button></em>
     }
 
     return (
-      <div className="kokoSivu">
-        <h1>Herra Hakkaraisen blogisivut</h1>
-        <Notification />
-        <Router>
-          <div>
+      <Container>
+        <div className="kokoSivu">
+          <Header as='h1' color='grey'>
+            <p></p>
+            <Segment secondary textAlign='center'>
+              Herra Hakkaraisen blogisivut
+            </Segment>
+          </Header>
+          <Router>
             <div>
-              <Link to="/blogs">blogs</Link> &nbsp;
-              <Link to="/users">users</Link> &nbsp;
-              {!this.props.user
-                ? <Link to="/login">login</Link>
-                : loggautunut(this.props)
-              }
+              <Menu inverted >
+                <Menu.Item link>
+                  <Link to="/blogs">blogs</Link>
+                </Menu.Item>
+                <Menu.Item link>
+                  <Link to="/users">users</Link>
+                </Menu.Item>
+                <Menu.Item link>
+                  {!this.props.user
+                    ? <Link to="/login">login</Link>
+                    : loggautunut(this.props)
+                  }
+                </Menu.Item>
+              </Menu>
+              <Notification />
+              <Segment>
+                <Route exact path="/" render={() =>
+                  this.props.user
+                    ? <Redirect to="/blogs" />
+                    : <Home />
+                } />
+                <Route exact path="/blogs" render={() => <BlogList /> } />
+                <Route exact path="/blogs/:id" render={({ match, history }) =>
+                  <Blogi history={history} blogi={blogById(this.props, match.params.id)} />}
+                />
+                <Route exact path="/users" render={() => <UserList />} />
+                <Route exact path="/users/:id" render={({ match }) =>
+                  <Juuseri juuseri={userById(this.props, match.params.id)} />}
+                />
+                <Route exact path="/login" render={() =>
+                  this.props.user
+                    ? <Redirect to="/blogs" />
+                    : <LoginForm />
+                } />
+              </Segment>
             </div>
-            <Route exact path="/" render={() =>
-              this.props.user
-                ? <Redirect to="/blogs" />
-                : <Home />
-            } />
-            <Route exact path="/blogs" render={() => <BlogList /> } />
-            <Route exact path="/blogs/:id" render={({ match, history }) =>
-              <Blogi history={history} blogi={blogById(this.props, match.params.id)} />}
-            />
-            <Route exact path="/users" render={() => <UserList />} />
-            <Route exact path="/users/:id" render={({ match }) =>
-              <Juuseri juuseri={userById(this.props, match.params.id)} />}
-            />
-            <Route exact path="/login" render={() =>
-              this.props.user
-                ? <Redirect to="/blogs" />
-                : <LoginForm />
-            } />
-          </div>
-        </Router>
+          </Router>
 
-        <div>
-          <p></p>
-          <div>----------------------------------------------------------------------------</div>
-          <em>Hakkiksen blogisivut, FullStack devausta vuodesta 2018</em>
-          <div>----------------------------------------------------------------------------</div>
-          <p></p>
+          <div>
+            <Divider hidden/>
+            <Header as='h5' color='grey'>
+              <Segment secondary textAlign='center'>
+                <em> Hakkiksen blogisivut. Hand made in Järvenpää <Flag name='fi' /> </em>
+                <p>FullStack devausta vuodesta 2018</p>
+              </Segment>
+            </Header>
+          </div>
         </div>
-      </div>
+      </Container>
     )
   }
 }
 
 const mapStateToProps = (state) => {
-  console.log('App - mapStateToProps ')
   return {
     user: state.user,
     blog: state.blog,
