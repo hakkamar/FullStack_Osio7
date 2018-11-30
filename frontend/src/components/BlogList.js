@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Table } from 'semantic-ui-react'
+import { Table, Segment } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import BlogForm from './BlogForm'
 import Togglable from './Togglable'
@@ -19,21 +19,23 @@ class BlogList extends React.Component {
         </div>
         <p></p>
         <div>
-          <h2>Blogs</h2>
-          <Table striped celled>
-            <Table.Body>
-              {this.props.naytettavatBlogit.map(blog =>
-                <Table.Row key={ blog._id }>
-                  <Table.Cell>
-                    <Link to={`/blogs/${blog._id}`}>{blog.title} </Link>
-                  </Table.Cell>
-                  <Table.Cell>
-                    {blog.author}
-                  </Table.Cell>
-                </Table.Row>
-              )} 
-            </Table.Body>
-          </Table>
+          <Segment>
+            <h2>Blogs</h2>
+            <Table striped celled>
+              <Table.Body>
+                {this.props.naytettavatBlogit.map(blog =>
+                  <Table.Row key={ blog._id }>
+                    <Table.Cell>
+                      <Link to={`/blogs/${blog._id}`}>{blog.title} </Link>
+                    </Table.Cell>
+                    <Table.Cell>
+                      {blog.author}
+                    </Table.Cell>
+                  </Table.Row>
+                )} 
+              </Table.Body>
+            </Table>
+          </Segment>
         </div>
       </div>
     )

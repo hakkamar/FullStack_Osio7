@@ -92,11 +92,7 @@ export const blogComment = (blog, kommentti) => {
     const uusiCommentti = await blogService.updateComment(blog._id, newComment)
     dispatch({
       type: 'COMMENT_BLOG',
-      data: {
-        id: uusiCommentti._id,
-        blogi: blog._id,
-        comment: kommentti
-      }
+      data: uusiCommentti
     })
   }
 }

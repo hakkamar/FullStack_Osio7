@@ -15,11 +15,32 @@ import UserList from './components/UserList'
 import Blogi from './components/Blogi'
 import Juuseri from './components/Juuseri'
 
+const Otsikko = () => (
+  <Header >
+    <p></p>
+    <Segment secondary textAlign='center' color='black' >
+      <h1>Herra Hakkaraisen blogisivut</h1>
+    </Segment>
+  </Header>
+)
+
 const Home = () => (
   <div>
     <p>Tervetuloa sivuille. Liiku valikossa olevilla valinnoilla.</p>
     <p>Vain kirjautunut käyttäjä voi lisätä blogeja.</p>
     <p>Kuka vaan voi kommentoida blogeja.</p>
+  </div>
+)
+
+const Footer = () => (
+  <div>
+    <Divider hidden/>
+    <Header as='h5' color='grey'>
+      <Segment secondary textAlign='center' color='black'>
+        <em> Hakkiksen blogisivut. Hand made in Järvenpää <Flag name='fi' /> </em>
+        <p>FullStack devausta vuodesta 2018</p>
+      </Segment>
+    </Header>
   </div>
 )
 
@@ -31,6 +52,13 @@ const logout = async (props) => {
 }
 
 class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      activeItem: ''
+    }
+  }
+
   componentDidMount () {
     this.props.blogInitialization()
     this.props.juuuseritInitialization()
@@ -43,7 +71,11 @@ class App extends React.Component {
     }
   }
 
+  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+
   render() {
+    const { activeItem } = this.state
+
     const userById = (props, id) => {
       return props.juuserit.find(u => u.id === id)
     }
@@ -62,22 +94,17 @@ class App extends React.Component {
     return (
       <Container>
         <div className="kokoSivu">
-          <Header as='h1' color='grey'>
-            <p></p>
-            <Segment secondary textAlign='center'>
-              Herra Hakkaraisen blogisivut
-            </Segment>
-          </Header>
+          <Otsikko />
           <Router>
             <div>
               <Menu inverted >
-                <Menu.Item link>
+                <Menu.Item as='div' name='blogs' active={activeItem === 'blogs'} onClick={this.handleItemClick}>
                   <Link to="/blogs">blogs</Link>
                 </Menu.Item>
-                <Menu.Item link>
+                <Menu.Item as='div' name='users' active={activeItem === 'users'} onClick={this.handleItemClick}>
                   <Link to="/users">users</Link>
                 </Menu.Item>
-                <Menu.Item link>
+                <Menu.Item as='div' name='login' active={activeItem === 'login'} onClick={this.handleItemClick}>
                   {!this.props.user
                     ? <Link to="/login">login</Link>
                     : loggautunut(this.props)
@@ -107,16 +134,7 @@ class App extends React.Component {
               </Segment>
             </div>
           </Router>
-
-          <div>
-            <Divider hidden/>
-            <Header as='h5' color='grey'>
-              <Segment secondary textAlign='center'>
-                <em> Hakkiksen blogisivut. Hand made in Järvenpää <Flag name='fi' /> </em>
-                <p>FullStack devausta vuodesta 2018</p>
-              </Segment>
-            </Header>
-          </div>
+          <Footer />
         </div>
       </Container>
     )

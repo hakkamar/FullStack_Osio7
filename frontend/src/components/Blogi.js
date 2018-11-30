@@ -1,10 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Button, Icon, Label } from 'semantic-ui-react'
+import { Button, Icon, Label, Segment } from 'semantic-ui-react'
 import { blogLike, blogDelete, blogComment } from './../reducers/blogReducer'
 import { notificationChange } from './../reducers/notificationReducer'
-
-var kommentti = ''
 
 const remove =  async (props, blog, history) => {
   const ok = window.confirm(`remove blog '${ blog.title }' by ${ blog.author }?`)
@@ -18,20 +16,15 @@ const remove =  async (props, blog, history) => {
 }
 
 class Blogi extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      kommentti: ''
+    }
+  }
 
-  handleFieldChange = async (event) => {
-    event.preventDefault()
-
-    switch (event.target.name) {
-    case 'comment': {
-      kommentti = event.target.value
-      break
-    }
-    default: {
-      console.log(' no nyt pomppas... CommentForm/handleFieldChange ????')
-      break
-    }
-    }
+  handleFieldChange = (event) => {
+    this.setState({ kommentti: event.target.value })
   }
 
   lisaaja = (blog, history) => {
@@ -43,6 +36,7 @@ class Blogi extends React.Component {
         return (
           <div>
             <div> added by { blog.user.name } </div>
+            <p></p>
             <div><Button fluid size='tiny' onClick={ () => remove(this.props, blog, history) }>delete blog</Button></div>
           </div>
         )
@@ -50,6 +44,7 @@ class Blogi extends React.Component {
         return (
           <div>
             <div> added by { blog.user.name } </div>
+            <p></p>
           </div>
         )
       }
@@ -68,53 +63,60 @@ class Blogi extends React.Component {
     }
 
     const addComment = async (blogi) => {
-      this.props.blogComment(blogi, kommentti)
+      var teksti = ''
+      if (this.state.kommentti !== '') {
+        this.props.blogComment(blogi, this.state.kommentti)
 
-      const teksti = `blogille '${blogi.title}' lisätty kommentti '${kommentti}'`
-      this.props.notificationChange(teksti)
-      kommentti = ''
+        teksti = `blogille '${blogi.title}' lisätty kommentti '${this.state.kommentti}'`
+        this.props.notificationChange(teksti)
 
-      //console.log('addComment - history.location.pathname', history.location.pathname)
-      //history.push(history.location.pathname)
-      history.push('/blogs')
+        this.setState({ kommentti: '' })
+      } else {
+        teksti = 'error: tyhjää ei kommnetoida'
+        this.props.notificationChange(teksti)
+      }
+    }
+
+    if (blogi === undefined) {
+      return(<div>päivitetään sivu, malta hetki....</div>)
     }
 
     return(
       <div>
-        <h2>{blogi.title} - {blogi.author}</h2>
-        <div>
-          <a href={blogi.url}>{blogi.url}</a>
-        </div>
-        <p></p>
-        <div>
-          <Button as='div' labelPosition='left'>
-            <Label as='a' basic pointing='right'>
-              {blogi.likes} likes
-            </Label>
-            <Button icon color='red' onClick={ () => like(blogi) }>
-              <Icon name='heart' />
-                Like
+        <Segment>
+          <h2>{blogi.title} - {blogi.author}</h2>
+          <div>
+            <a href={blogi.url}>{blogi.url}</a>
+          </div>
+          <p></p>
+          <div>
+            <Button as='div' labelPosition='left'>
+              <Label as='a' basic pointing='right'>
+                {blogi.likes} likes
+              </Label>
+              <Button icon color='red' onClick={ () => like(blogi) }>
+                <Icon name='heart' />
+                  Like
+              </Button>
             </Button>
-          </Button>
-        </div>
-        <p></p>
-        <div> {this.lisaaja(blogi, history) } </div>
+          </div>
+          <p></p>
+          <div> {this.lisaaja(blogi, history) } </div>
+        </Segment>
         <p></p>
         <h2>comments</h2>
         <p></p>
 
-
         <form onSubmit={ () => addComment(blogi) }>
           <div>
             <input
-              value={this.value}
+              value={this.state.kommentti}
               name='comment'
               onChange={this.handleFieldChange}
             />
-            <Button type="submit">Kommentoi</Button>
+            <Button size='mini' type="submit">Kommentoi</Button>
           </div>
         </form>
-
 
         <p></p>
         <ul>
