@@ -9,7 +9,6 @@ usersRouter.get('/', async (request, response) => {
   response.send(users.map(User.format))
 })
 
-
 usersRouter.get('/:id', async (request, response) => {
   try {
     const user = await User.findById(request.params.id)
@@ -28,7 +27,7 @@ usersRouter.post('/', async (request, response) => {
   try {
     const { username, name, password, adult } = request.body
 
-    if ( password.length<3 ) {
+    if ( password.length < 3 ) {
       return response.status(400).json({ error: 'password too short' })
     }
 

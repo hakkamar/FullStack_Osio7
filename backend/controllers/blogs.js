@@ -5,9 +5,6 @@ const User = require('../models/user')
 const Comment = require('../models/comment')
 
 blogRouter.get('/', async (request, response) => {
-
-  console.log('haetaan kaikki')
-
   const blogs = await Blog
     .find({})
     .populate('user', { username: 1, name: 1 })
@@ -17,9 +14,6 @@ blogRouter.get('/', async (request, response) => {
 })
 
 blogRouter.get('/:id', async (request, response) => {
-
-  console.log('haetaan iideellä', request.params.id)
-
   try {
     const blog = await Blog.findById(request.params.id)
     if ( blog ) {
@@ -34,10 +28,6 @@ blogRouter.get('/:id', async (request, response) => {
 })
 
 blogRouter.post('/:id/comments', async (request, response) => {
-
-  console.log('lisätään uusi kommentti !!!!')
-  console.log('request.body.comment', request.body.comment)
-
   try {
     const kommentti = request.body.comment
     const blogi_iidee = request.body.blogi
@@ -63,9 +53,6 @@ blogRouter.post('/:id/comments', async (request, response) => {
 })
 
 blogRouter.post('/', async (request, response) => {
-
-  console.log('lisätään uusi')
-
   const { title, author, url, likes } = request.body
 
   try {
@@ -77,13 +64,11 @@ blogRouter.post('/', async (request, response) => {
     }
 
     if (title === undefined ||  url === undefined) {
-      return response.status(400).json({ error: 'url or title missing'})
+      return response.status(400).json({ error: 'url or title missing' })
     }
 
     const user = await User.findById(decodedToken.id)
-
     const blog = new Blog({ title, author, url, likes: (likes || 0), user: user._id } )
-
     const result = await blog.save()
 
     user.blogs = user.blogs.concat(blog._id)
@@ -101,9 +86,6 @@ blogRouter.post('/', async (request, response) => {
 })
 
 blogRouter.delete('/:id', async (request, response) => {
-
-  console.log('poistetaan iideellä', request.params.id)
-
   const blog = await Blog.findById(request.params.id)
 
   try {
@@ -113,13 +95,9 @@ blogRouter.delete('/:id', async (request, response) => {
     if (!token || !decodedToken.id) {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
-
-    console.log(blog.user, decodedToken.id)
-
     if (decodedToken.id.toString() !== blog.user.toString()) {
       return response.status(400).json({ error: 'only creator can delete a blog' })
     }
-
     if (blog) {
       await blog.remove()
     }
@@ -136,11 +114,9 @@ blogRouter.delete('/:id', async (request, response) => {
 })
 
 blogRouter.put('/:id', async (request, response) => {
-
-  console.log('päivitetään iideellä', request.params.id)
-
   const { title, author, url, likes } = request.body
   const blog = await Blog.findByIdAndUpdate(request.params.id, { title, author, url, likes } , { new: true })
+  //const blog = await Blog.findOneAndUpdate({ _id: request.params.id }, { title, author, url, likes } , { new: true })
 
   response.send(blog)
 })

@@ -6,10 +6,6 @@ const commentSchema = new mongoose.Schema({
 })
 
 commentSchema.statics.format = function (comment) {
-
-  console.log('comment sceemassa -- comment ', comment)
-  console.log('comment sceemassa -- comment.comment ', comment.comment)
-
   return {
     id: comment._id,
     blogi: comment.blogi,
