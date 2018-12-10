@@ -52,35 +52,33 @@ const initialBlogs = [
   }
 ]
 
-const format = (blog) => {
+const filter = (blog) => {
   return {
-    id: blog._id,
     title: blog.title,
     author: blog.author,
-    url: blog.url,
     likes: blog.likes,
+    url: blog.url,
     comment: blog.comment
   }
 }
 
-const nonExistingId = async () => {
-  const blog = new Blog()
-  await blog.save()
-  await blog.remove()
-
-  return blog._id.toString()
+const blogsInDb = async () => {
+  return await Blog.find({})
 }
 
-const blogsInDb = async () => {
-  const blogs = await Blog.find({})
-  return blogs.map(format)
+const filterUser = (user) => {
+  return {
+    name: user.name,
+    username: user.username,
+    adult: user.adult
+  }
 }
 
 const usersInDb = async () => {
   const users = await User.find({})
-  return users
+  return users.map(filterUser)
 }
 
 module.exports = {
-  initialBlogs, format, nonExistingId, blogsInDb, usersInDb
+  filter, blogsInDb, initialBlogs, usersInDb
 }
