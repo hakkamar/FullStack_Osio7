@@ -86,7 +86,7 @@ class Blogi extends React.Component {
         <Segment>
           <h2>{blogi.title} - {blogi.author}</h2>
           <div>
-            <a href={blogi.url}>{blogi.url}</a>
+            <a href={blogi.url} target="_blank" rel="noopener noreferrer" >{blogi.url}</a>
           </div>
           <p></p>
           <div>

@@ -22,6 +22,10 @@ class BlogForm extends React.Component {
     var teksti = ''
     if (this.state.title === '' || this.state.author === '' || this.state.url === '') {
       teksti = 'error: Anna title, author ja url'
+      props.notificationChange(teksti)
+    }
+    if (!this.state.url.startsWith('http')) {
+      teksti = 'error: url:issa pitää olla myös http:// -alku'
     } else {
       const Uusiblog = {
         title: this.state.title,
@@ -67,7 +71,7 @@ class BlogForm extends React.Component {
             <Form.Field>
               <label>url</label>
               <input
-                placeholder='JeeJeeJee -sivu mistä blogi löytyy'
+                placeholder='JeeJeeJee -urli mukaan lukien http:// -alku'
                 value={this.state.url}
                 name='url'
                 onChange={this.handleFieldChange}
